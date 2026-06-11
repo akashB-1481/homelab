@@ -23,6 +23,14 @@ spec:
       containers:
         - name: nginx-green
           image: nginx:latest
+          volumeMounts:
+            - name: nginx-green-html
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: index.html
+      volumes:
+        - name: nginx-green-html
+          configMap:
+            name: nginx-green-cm
 
           ports:
             - containerPort: 80
