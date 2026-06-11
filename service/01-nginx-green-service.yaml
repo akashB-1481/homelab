@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-green-svc
+  namespace: homelab
+spec:
+  selector:
+    app: nginx-green
+  type: ClusterIP
+
+  ports:
+    - name: nginx-green-svc
+      protocol: TCP
+      port: 80
+      targetPort: 80
