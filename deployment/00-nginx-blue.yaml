@@ -23,10 +23,10 @@ spec:
             - name: nginx-blue-html
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
-      volumes:
-        - name: nginx-blue-html
-          configMap:
-            name: nginx-blue-cm
+    volumes:
+      - name: nginx-blue-html
+        configMap:
+          name: nginx-blue-cm
           ports:
             - containerPort: 80
               name: nginx-blue
