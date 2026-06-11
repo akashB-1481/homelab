@@ -22,7 +22,7 @@ spec:
       # - Each init container must complete successfully before the next one starts.
       containers:
         - name: nginx-green
-          image: MYAPP:latest
+          image: nginx:latest
 
           ports:
             - containerPort: 80
