@@ -5,6 +5,8 @@ kind: Ingress
 metadata:
   name: blue-green-path-based-routing
   namespace: homelab
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
