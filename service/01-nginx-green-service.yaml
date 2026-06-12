@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     app: nginx-green
-  type: ClusterIP
+  type: LoadBalancer
 
   ports:
     - name: nginx-green-svc
