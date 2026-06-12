@@ -8,18 +8,20 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: app.homelab.local
+    - host: blue.homelab.local
       http:
         paths:
-          - path: /blue
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: nginx-blue-svc
                 port:
                   number: 80
-
-          - path: /green
+    - host: green.homelab.local
+      http:
+        paths:
+          - path: /
             pathType: Prefix
             backend:
               service:

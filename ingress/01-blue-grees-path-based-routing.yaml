@@ -3,18 +3,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: blue-green-path-based
+  name: blue-green-path-based-routing
   namespace: homelab
 spec:
   ingressClassName: nginx
   rules:
-  - host: foo.bar.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: ServiceName
-            port:
-              number: 80
+    - host: app.homelab.local
+      http:
+        paths:
+          - path: /blue
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-blue-svc
+                port:
+                  number: 80
+
+          - path: /green
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-green-svc
+                port:
+                  number: 80
