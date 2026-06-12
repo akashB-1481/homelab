@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     app: nginx-blue
-  type: LoadBalancer
+  type: ClusterIP
 
   ports:
     - name: nginx-blue-svc
