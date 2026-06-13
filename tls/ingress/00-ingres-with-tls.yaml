@@ -1,0 +1,34 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blue-green-path-based-routing
+  namespace: homelab
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - app.homelab.local
+      secretName: homelab-tls-secret
+  rules:
+    - host: app.homelab.local
+      http:
+        paths:
+          - path: /blue
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-blue-svc
+                port:
+                  number: 80
+
+          - path: /green
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-green-svc
+                port:
+                  number: 80
