@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: homelab-root-ca
+  namespace: homelab
+
+spec:
+  isCA:
+    true # Indicates that this certificate will be a Certificate Authority (CA) certificate.
+    # The isCA field is set to true, which means that this certificate can be used to sign other certificates, making it a root CA certificate.
+    # with true it is a root CA certificate, which can be used to sign other certificates, creating a chain of trust.
+
+  commonName:
+    homelab-root-ca # The commonName field specifies the primary domain name for the certificate. In this case, it is set to homelab-root-ca, which means that the certificate will be valid for this specific hostname. The common name is a critical part of the certificate as it indicates the identity of the server that the certificate is issued for. When clients connect to a server using TLS, they will check if the common name in the certificate matches the hostname they are trying to connect to. If there is a mismatch, clients may reject the connection or display a warning about an untrusted certificate.
+    # Equivalent to CN in opnessl
+
+  secretName: homelab-root-ca-secret
+
+  issuerRef: # The issuerRef field specifies the issuer that will be used to generate the certificate. In this case, it references a self-signed issuer named selfsigned-issuer. The kind field indicates that this is an Issuer resource (as opposed to a ClusterIssuer). The cert-manager will use the specified issuer to generate the TLS certificate for the host defined in the certificate resource.
+    name: selfsigned-issuer
+    kind: Issuer
