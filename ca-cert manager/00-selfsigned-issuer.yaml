@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1 # Use cert-manager API.
+kind: Issuer # Use the Issuer resource to define a self-signed certificate issuer.
+
+metadata:
+  name: selfsigned-issuer
+  namespace: homelab
+
+spec:
+  selfSigned: {}
+  # Use the selfSigned field to specify that this issuer will generate self-signed certificates.
+  # The empty object {} indicates that no additional configuration is needed for the self-signed issuer.
+  # The self-signed issuer will generate certificates that are signed by itself, which is useful for testing and development purposes.
+  # Note that self-signed certificates are not trusted by default in most browsers and operating systems, so they should not be used in production environments.
+  # Exactly like your OpenSSL self-signed certificate.
