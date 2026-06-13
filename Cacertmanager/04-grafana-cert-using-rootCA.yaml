@@ -1,0 +1,20 @@
+#
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: grafana-cert
+  namespace: homelab
+
+spec:
+  secretName: grafana-tls-secret
+
+  commonName: grafana.homelab.local
+
+  dnsNames:
+    - grafana.homelab.local
+
+  issuerRef:
+    name: homelab-ca-issuer
+    kind: Issuer
