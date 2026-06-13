@@ -6,7 +6,7 @@ metadata:
   name: blue-green-path-based-routing
   namespace: homelab
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: / # Rewrite the URL path to the root of the backend service
 spec:
   ingressClassName: nginx
   rules:
