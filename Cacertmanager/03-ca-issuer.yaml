@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer # Use the Issuer resource to define a CA certificate issuer. , Creates a certificate signer.
+
+metadata:
+  name: homelab-ca-issuer
+  namespace: homelab
+
+spec:
+  ca: # Use a CA Certificate , not self-signed.
+    secretName: homelab-root-ca-secret
