@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: app-homelab-cert
+  namespace: homelab
+
+spec:
+  secretName: cert-manager-tls-secret # The name of the Kubernetes Secret that will be created (automatically) to store the TLS certificate and private key. This secret will be used by the Ingress resource to enable TLS for the specified host.
+
+  duration: 8760h
+
+  renewBefore: 720h
+
+  issuerRef:
+    name: selfsigned-issuer
+    kind: Issuer
+
+    # The issuerRef field specifies the issuer that will be used to generate the certificate. In this case, it references a self-signed issuer named selfsigned-issuer. The kind field indicates that this is an Issuer resource (as opposed to a ClusterIssuer). The cert-manager will use the specified issuer to generate the TLS certificate for the host defined in the certificate resource.
+    # Who signs this certificate? ==> selfsigned-issuer
+
+  commonName: app.homelab.local # The commonName field specifies the primary domain name for the certificate. In this case, it is set to app.homelab.local, which means that the certificate will be valid for this specific hostname. The common name is a critical part of the certificate as it indicates the identity of the server that the certificate is issued for. When clients connect to a server using TLS, they will check if the common name in the certificate matches the hostname they are trying to connect to. If there is a mismatch, clients may reject the connection or display a warning about an untrusted certificate.
+
+  dnsNames:
+    - app.homelab.local # The dnsNames field is an array that specifies additional domain names (Subject Alternative Names) that the certificate should be valid for. In this case, it includes app.homelab.local, which is the same as the common name. This means that the certificate will be valid for both the common name and any additional DNS names listed in this field. Including multiple DNS names allows the certificate to be used for multiple hostnames, which can be useful for services that are accessed through different domain names or subdomains.
