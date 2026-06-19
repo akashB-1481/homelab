@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: app-ca-signed-cert
+  namespace: homelab
+
+spec:
+  secretName: app-ca-tls-secret
+
+  commonName: app.homelab.local
+
+  dnsNames:
+    - app.homelab.local
+
+  issuerRef:
+    name: homelab-cluster-ca
+    kind: ClusterIssuer
