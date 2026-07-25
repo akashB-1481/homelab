@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+
+metadata:
+  name: nginx-blue-only-reader
+  namespace: homelab
+
+rules:
+  - apiGroups:
+      - "app"
+
+    resources:
+      - deployment
+
+    resourceNames:
+      - nginx-blue
+
+    verbs:
+      - get
