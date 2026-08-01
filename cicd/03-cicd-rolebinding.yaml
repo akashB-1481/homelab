@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: github-deployer-binding
+  namespace: homelab
+
+subjects:
+  - kind: ServiceAccount
+    name: github-runner-sa
+    namespace: cicd
+
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: github-deployer

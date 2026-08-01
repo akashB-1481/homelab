@@ -12,8 +12,17 @@ rules:
     resources:
       - deployment
 
-    resourceNames:
-      - nginx-blue
+    verbs:
+      - get
+      - update
+      - patch
+
+  - apiGroups:
+      - ""
+
+    resources:
+      - pods
 
     verbs:
       - get
+      - list
