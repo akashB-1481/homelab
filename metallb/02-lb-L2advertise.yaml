@@ -4,3 +4,7 @@ kind: L2Advertisement
 metadata:
   name: homelab-l2
   namespace: metallb-system
+
+spec:
+  ipAddressPools:
+    - homelab-pool

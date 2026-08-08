@@ -1,0 +1,45 @@
+name: Platform - MetalLB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: check runner
+        run: |
+          echo "Runner name: ${{ runner.name }}"
+          echo "Runner OS: ${{ runner.os }}"
+          kubectl version --client
+
+      - name: Check Kubernetes access
+        run: |
+          kubectl config current-context
+          kubectl auth can-i create customresourcedefinitions
+
+      - name: Install MetalLB
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-native.yaml
+
+      - name: Wait for MetalLB
+        run: |
+          kubectl wait \
+            --namespace metallb-system \
+            --for=condition=Available \
+            deployment/controller \
+            --timeout=180s
+
+      - name: Create IPAddressPool
+        run: |
+          kubectl apply -f metallb/01-lb-ipaddresspool.yaml
+          kubectl apply -f metallb/02-lb-L2advertise.yaml
+
+      - name: Verify MetalLB
+        run: |
+          kubectl get all -n metallb-system
+          kubectl get ipaddresspool -n metallb-system
+          kubectl get l2advertisement -n metallb-system
