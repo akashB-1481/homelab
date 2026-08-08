@@ -1,0 +1,56 @@
+name: Platform - NGINX Ingress
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check runner
+        run: |
+          echo "Runner name: ${{ runner.name }}"
+          echo "Runner OS: ${{ runner.os }}"
+          whoami
+          kubectl version --client
+
+      - name: Select platform context
+        run: |
+          kubectl config use-context platform-bootstrap@homelab
+
+      - name: Check Kubernetes access
+        run: |
+          kubectl config current-context
+          kubectl auth can-i create namespaces
+          kubectl auth can-i create deployments
+          kubectl auth can-i create services
+
+      - name: Install NGINX Ingress Controller
+        run: |
+          kubectl apply \
+            -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.3/deploy/static/provider/baremetal/deploy.yaml
+
+      - name: Wait for NGINX controller
+        run: |
+          kubectl wait \
+            --namespace ingress-nginx \
+            --for=condition=Available \
+            deployment/ingress-nginx-controller \
+            --timeout=180s
+
+      - name: Configure NGINX LoadBalancer
+        run: |
+          kubectl patch service ingress-nginx-controller \
+            -n ingress-nginx \
+            --type merge \
+            -p '{"spec":{"type":"LoadBalancer"}}'
+
+      - name: Verify NGINX
+        run: |
+          kubectl get pods -n ingress-nginx -o wide
+          kubectl get svc -n ingress-nginx
