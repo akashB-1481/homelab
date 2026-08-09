@@ -1,0 +1,53 @@
+name: Platform - cert-manager
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check runner
+        run: |
+          echo "Runner: ${{ runner.name }}"
+          echo "OS: ${{ runner.os }}"
+          whoami
+          kubectl version --client
+
+      - name: Select platform context
+        run: |
+          kubectl config use-context platform-bootstrap@homelab
+
+      - name: Check Kubernetes access
+        run: |
+          kubectl config current-context
+          kubectl auth can-i create customresourcedefinitions
+          kubectl auth can-i create namespaces
+
+      - name: Install cert-manager
+        run: |
+          kubectl apply \
+            -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.2/cert-manager.yaml
+
+      - name: Wait for cert-manager
+        run: |
+          kubectl wait \
+            --namespace cert-manager \
+            --for=condition=Available \
+            deployment/cert-manager \
+            --timeout=180s
+
+          kubectl wait \
+            --namespace cert-manager \
+            --for=condition=Available \
+            deployment/cert-manager-webhook \
+            --timeout=180s
+
+      - name: Verify cert-manager
+        run: |
+          kubectl get pods -n cert-manager
+          kubectl get crd | grep cert-manager
