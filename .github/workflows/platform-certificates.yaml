@@ -1,0 +1,53 @@
+name: Platform - Certificates
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    env:
+      KUBECONFIG: /home/gituser/.kube/platform-bootstrap.config
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Kubernetes access
+        run: |
+          kubectl config current-context
+          kubectl auth can-i create secrets
+          kubectl auth can-i create certificates.cert-manager.io
+
+      - name: Verify cert-manager
+        run: |
+          kubectl get pods -n cert-manager
+          kubectl wait \
+            --namespace cert-manager \
+            --for=condition=Available \
+            deployment/cert-manager \
+            --timeout=180s
+
+      - name: Create Root CA
+        run: |
+          kubectl apply -f Cacertmanager/02-root-ca.yaml
+
+      - name: Wait for Root CA
+        run: |
+          kubectl wait \
+            --namespace homelab \
+            --for=condition=Ready \
+            certificate/homelab-root-ca \
+            --timeout=180s
+
+      - name: Create CA Issuer
+        run: |
+          kubectl apply -f Cacertmanager/03-ca-issuer.yaml
+
+      - name: Verify CA
+        run: |
+          kubectl get certificate -n homelab
+          kubectl get secret homelab-root-ca-secret -n homelab
+          kubectl get issuer -n homelab
